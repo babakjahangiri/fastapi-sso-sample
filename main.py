@@ -29,23 +29,9 @@ oauth.register(
 @app.get("/")
 def index(request: Request):
     user = request.session.get('user')
-    print(user)
     if user:
         return RedirectResponse('welcome')
 
-    # return templates.TemplateResponse(
-    #     name="home.html",
-    #     context={"request": request}
-    # )
-
-
-# @app.get('/welcome')
-# def welcome(request: Request):
-#     user = request.session.get('user')
-#     print(user)
-#     if not user:
-#         return RedirectResponse('/')
-#     return {"message":"welcome"}
  
 @app.get("/login")
 async def login(request: Request):
@@ -60,7 +46,6 @@ async def auth(request: Request):
     except Exception as e:
         return e
     user = token.get('userinfo')
-    print(user)  # Add this line to check the user data
     if user:
         request.session['user'] = dict(user)
     return RedirectResponse('welcome')
