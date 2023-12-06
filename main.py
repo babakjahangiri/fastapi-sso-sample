@@ -4,12 +4,12 @@ from starlette.requests import Request
 from starlette.responses import RedirectResponse
 from starlette.middleware.sessions import SessionMiddleware
 from authlib.integrations.starlette_client import OAuth, OAuthError
-from config import CLIENT_ID, CLIENT_SECRET
+from app.config import CLIENT_ID, CLIENT_SECRET
 from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key="add any string...")
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# app.mount("/static", StaticFiles(directory="static"), name="static")
 
 oauth = OAuth()
 oauth.register(
@@ -24,32 +24,29 @@ oauth.register(
 )
 
 
-templates = Jinja2Templates(directory="templates")
 
 
 @app.get("/")
 def index(request: Request):
     user = request.session.get('user')
+    print(user)
     if user:
         return RedirectResponse('welcome')
 
-    return templates.TemplateResponse(
-        name="home.html",
-        context={"request": request}
-    )
+    # return templates.TemplateResponse(
+    #     name="home.html",
+    #     context={"request": request}
+    # )
 
 
-@app.get('/welcome')
-def welcome(request: Request):
-    user = request.session.get('user')
-    if not user:
-        return RedirectResponse('/')
-    return templates.TemplateResponse(
-        name='welcome.html',
-        context={'request': request, 'user': user}
-    )
-
-
+# @app.get('/welcome')
+# def welcome(request: Request):
+#     user = request.session.get('user')
+#     print(user)
+#     if not user:
+#         return RedirectResponse('/')
+#     return {"message":"welcome"}
+ 
 @app.get("/login")
 async def login(request: Request):
     url = request.url_for('auth')
@@ -62,18 +59,16 @@ async def auth(request: Request):
     try:
         token = await oauth.google.authorize_access_token(request)
         print(token)
-    except OAuthError as e:
-        return templates.TemplateResponse(
-            name='error.html',
-            context={'request': request, 'error': e.error}
-        )
+    except Exception as e:
+        return e
     user = token.get('userinfo')
+    print(user)  # Add this line to check the user data
     if user:
         request.session['user'] = dict(user)
     return RedirectResponse('welcome')
 
 
-@app.get('/logout')
-def logout(request: Request):
-    request.session.pop('user')
-    return RedirectResponse('/')
+# @app.get('/logout')
+# def logout(request: Request):
+#     request.session.pop('user')
+#     return RedirectResponse('/')
