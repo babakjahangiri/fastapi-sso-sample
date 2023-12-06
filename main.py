@@ -50,15 +50,13 @@ def index(request: Request):
 @app.get("/login")
 async def login(request: Request):
     url = request.url_for('auth')
-    print(request)
-    return await oauth.google.authorize_redirect(request, url)
+    return await oauth.google.authorize_redirect(request, url, prompt='select_account')
 
 
 @app.get('/auth')
 async def auth(request: Request):
     try:
         token = await oauth.google.authorize_access_token(request)
-        print(token)
     except Exception as e:
         return e
     user = token.get('userinfo')
@@ -68,7 +66,7 @@ async def auth(request: Request):
     return RedirectResponse('welcome')
 
 
-# @app.get('/logout')
-# def logout(request: Request):
-#     request.session.pop('user')
-#     return RedirectResponse('/')
+@app.get('/logout')
+def logout(request: Request):
+    request.session.pop('user')
+    return RedirectResponse('/')
