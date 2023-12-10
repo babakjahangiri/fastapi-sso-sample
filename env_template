@@ -1,3 +1,4 @@
-client-id = 
-client-secret =
-redirect-url =
+client-id = "xxxx.apps.googleusercontent.com" something like this
+client-secret = "xxxxxx"
+redirect-url = "http://localhost:8000/auth"
+project-id = "your_google_project_id"
