@@ -35,6 +35,9 @@ typing-extensions = "==4.8.0"
 urllib3 = "==2.1.0"
 uvicorn = "==0.24.0.post1"
 itsdangerous = "*"
+google-api-python-client = "*"
+google-auth-httplib2 = "*"
+google-auth-oauthlib = "*"
 
 [dev-packages]
 
